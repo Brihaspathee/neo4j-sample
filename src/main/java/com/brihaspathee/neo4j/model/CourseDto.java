@@ -1,6 +1,7 @@
 package com.brihaspathee.neo4j.model;
 
 import com.brihaspathee.neo4j.models.Lesson;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +14,11 @@ import java.util.List;
  * Package Name: com.brihaspathee.neo4j.model
  * To change this template use File | Settings | File and Code Template
  */
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CourseDto {
 
     private String identifier;

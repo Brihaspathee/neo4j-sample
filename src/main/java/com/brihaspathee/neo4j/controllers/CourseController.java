@@ -1,7 +1,9 @@
 package com.brihaspathee.neo4j.controllers;
 
+import com.brihaspathee.neo4j.model.CourseDto;
 import com.brihaspathee.neo4j.models.Course;
 import com.brihaspathee.neo4j.services.CourseService;
+import com.brihaspathee.neo4j.services.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +31,25 @@ public class CourseController {
 
     private final CourseService courseService;
 
+    private final LessonService lessonService;
+
     @GetMapping("/")
     public ResponseEntity<List<Course>> findAll() {
         return ResponseEntity.ok(courseService.findAll());
     }
 
     @GetMapping("/{identifier}")
-    public ResponseEntity<Course> findById(@PathVariable String identifier) {
+    public ResponseEntity<CourseDto> findById(@PathVariable String identifier) {
         Course course = courseService.getCourseById(identifier).orElseThrow(
                 ()-> new ResponseStatusException(HttpStatusCode.valueOf(404))
         );
-        return ResponseEntity.ok(course);
+
+        CourseDto courseDto = CourseDto.builder()
+                .title(course.getTitle())
+                .identifier(course.getIdentifier())
+                .teacher(course.getTeacher())
+                .build();
+        courseDto.setLessons(lessonService.getLessonsByCourseId(course.getIdentifier()));
+        return ResponseEntity.ok(courseDto);
     }
 }
